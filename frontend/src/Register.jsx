@@ -30,7 +30,7 @@ const Register = () => {
 
     if (validate()){
       try{
-        const response = await fetch(import.meta.env.VITE_REGISTER_POST_URL, {
+        const response = await fetch(import.meta.env.VITE_REGISTER_POST, {
           method: "POST",
           headers: {
             "Content-Type": "application/json"

@@ -24,7 +24,7 @@ const Login = () => {
       }
       else{
         try{
-        const response = await fetch(import.meta.env.VITE_LOGIN_POST_URL, {
+        const response = await fetch(import.meta.env.VITE_LOGIN_POST, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -37,7 +37,7 @@ const Login = () => {
           setErrors(data)
         }
         else{
-          navigate("/")
+          navigate("/verify-2fa", { state: { email: formData.email }})
         }
         }
         catch{
