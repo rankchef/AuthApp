@@ -1,10 +1,13 @@
 import React from 'react'
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import usePostReq from '../hooks/usePostReq';
 const Register = () => {
+
   const [formData, setFormData] = useState({email: "", username: "", password: "", confirmPassword: ""})
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
+  const { postReq } = usePostReq();
   
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -28,30 +31,14 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (validate()){
-      try{
-        const response = await fetch(import.meta.env.VITE_REGISTER_POST, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(formData)
-        })
+    if (!validate()) return;
 
-        const data = await response.json();
-        if (!response.ok){
-          setErrors(data)
-        }
-        else{
-          navigate('/successful-register', { state: { email: formData.email }})
-        }
-      }
-      catch(err){
-        alert("Please try again later")
-        console.log(err)
-      }
+    const { status, data } = await postReq(import.meta.env.VITE_REGISTER_POST, formData) 
+    
+    if (status === 201) return navigate('/successful-register', { state: { email: formData.email }});
+    
+    setErrors(data);
     }
-  }
   
   return (
     <div className='flex items-center justify-center' style={{ minHeight: '100vh', flexDirection: 'column'}}>
@@ -75,6 +62,7 @@ const Register = () => {
                 {errors.confirmPassword && <p style={{color: "red"}}>{errors.confirmPassword}</p>}
                 <button type="submit">Register</button>
             </form>
+            <small>Already have an account? <Link to="/login">Login here</Link></small>
         </div>
     </div>
   )

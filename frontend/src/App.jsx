@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Outlet } from 'react-router-dom'
-import Header from './Header'
+import Header from './Header.jsx'
 function App() {
   const [count, setCount] = useState(0)
 

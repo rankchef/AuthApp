@@ -1,15 +1,20 @@
 import React from 'react'
 import { createContext } from 'react'
 import { useEffect, useState } from 'react'
-
+import useGetReq from '../hooks/useGetReq';
 export const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
+    const { getReq } = useGetReq();
     const [authState, setAuthState] = useState({authenticated: false, user_data: null, loading: true})
-    const [authTrigger, setAuthTrigger] = useState(0)
-    const triggerAuthFetch = () =>{
-        setAuthTrigger(authTrigger + 1);
+    const login = (userData) => {
+        setAuthState({authenticated: true, user_data: userData, loading: false})
     }
+    const logout = () => {
+        getReq(import.meta.env.VITE_LOGOUT_GET)
+        setAuthState({authenticated: false, user_data: null, loading: false})
+    }
+
     useEffect(() => {
         const fetchAuthContext = async () => {
             const res = await fetch(import.meta.env.VITE_AUTH_STATUS_GET, {
@@ -19,10 +24,10 @@ const AuthProvider = ({ children }) => {
             setAuthState({authenticated, user_data, loading: false});
         }
         fetchAuthContext();
-    }, [authTrigger])
+    }, [])
 
   return (
-        <AuthContext.Provider value = {{authState, triggerAuthFetch}}>
+        <AuthContext.Provider value = {{authState, login, logout}}>
             {children}
         </AuthContext.Provider>
   )

@@ -3,28 +3,16 @@ import { useContext } from 'react'
 import { AuthContext } from './AuthProvider'
 import { useState } from 'react'
 import { useEffect } from 'react'
+import Post from './Post'
+import PostList from './PostList'
 const Home = () => {
   const {authState, setAuthState} = useContext(AuthContext);
   const [imageUrl, setImageUrl] = useState("")
-  useEffect( () => {
-    const fetchImage = async () => {
-      const response = await fetch(import.meta.env.VITE_HOME_GET,{
-        credentials: "include"
-      })
-      console.log(response);
-      const data = await response.json();
-      
-      setImageUrl(data.responseImage)
-    }
-      fetchImage();
-  }, [])
-
-  
 
   return (
     <div className='flex items-center justify-center' style={{ minHeight: '100vh', flexDirection: 'column'}}>
-      {imageUrl && <img src={imageUrl}/>}
-      {!authState.loading && <h2>Hello, {authState.user_data.username}</h2>}
+      {(!authState.loading && authState.authenticated) && <h2>Hello, {["admin", "mod"].includes(authState.user_data.role) ? authState.user_data.role : ""} {authState.user_data.username}</h2>}
+      <PostList url={"http://localhost:8000/post/all"}/>
     </div>
   )
 }

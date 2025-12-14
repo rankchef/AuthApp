@@ -155,3 +155,25 @@ main {
   --text-dark: #1a1a1a;
   --bg-light: #f7f8fa;
 }
+
+/* ===== Post Card Specific ===== */
+.post-card {
+  max-width: 600px;  /* fixed width */
+  width: 100%;       /* responsive */
+  margin: 2rem auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.post-content {
+  white-space: pre-wrap;  /* respects line breaks */
+}
+
+.post-meta {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+  font-size: 0.875rem;
+  color: #6b7280; /* gray-500 */
+}
+

@@ -22,13 +22,4 @@ export const validateRegister = async (req, res, next) => {
     next();
 }
 
-export const validateLogin = async (req, res, next) => {
-    const {email, password} = req.body;   
-    const user = await User.findOne({email});
-    if (!user) return res.status(401).send({errorMessage: "Incorrect email or password"});
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(401).send({errorMessage: "Incorrect email or password"});
-    
-    req.user = user;
-    next();
-}
+

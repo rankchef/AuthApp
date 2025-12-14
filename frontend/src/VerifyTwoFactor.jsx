@@ -5,12 +5,14 @@ import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from './AuthProvider';
+import usePostReq from '../hooks/usePostReq';
 const VerifyTwoFactor = () => {
   const authContext = useContext(AuthContext);
-  const { triggerAuthFetch } = authContext;
+  const { login } = authContext;
   const location = useLocation();
   const navigate = useNavigate();
   const email = location.state?.email;
+  const { postReq } = usePostReq();
   const [formData, setFormData] = useState({code: "", email: email})
   const [errors, setErrors] = useState({errorMessage: ""})
   useEffect(() =>{
@@ -26,32 +28,16 @@ const VerifyTwoFactor = () => {
     const handleSubmit = async (e) => {
       e.preventDefault();
       if (!formData.code || !email){
-        setErrors({errorMessage: "2FA code is required"});
+        return setErrors({errorMessage: "2FA code is required"});
       }
-      else{
-        try{
-        const response = await fetch(import.meta.env.VITE_VERIFY_CODE_POST, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        credentials: "include",
-        body: JSON.stringify(formData)
-        })
-        const data = await response.json()
-        if (!response.ok){
-          setErrors(data)
-        }
-        else{
-          triggerAuthFetch();
-          navigate("/")
-        }
-        }
-        catch(err){
-          console.log(err)
-        }
+      const { status, data } = await postReq(import.meta.env.VITE_VERIFY_CODE_POST, formData);
+
+      if (status === 200) {
+        login(data);
+        return navigate('/')
       }
-      }
+      setErrors(data);
+    }
       return (
     <>
       <div className='flex items-center justify-center' style={{ minHeight: '100vh', flexDirection: 'column'}}> 
